@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -38,6 +39,7 @@ const TABS = [
   { id: "events", label: "📅 Events" },
   { id: "directory", label: "👥 Directory" },
   { id: "announcements", label: "📢 Announcements" },
+  { id: "qrcode", label: "📱 QR Code" },
 ];
 
 export default function App() {
@@ -751,6 +753,36 @@ export default function App() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ===== QR CODE TAB ===== */}
+        {activeTab === "qrcode" && (
+          <div style={{ textAlign: "center", padding: "24px 16px" }}>
+            <h2 style={styles.sectionTitle}>📱 Share The Neighborhood Hangout</h2>
+            <p style={{ color: "#4a5568", fontSize: 14, marginBottom: 24 }}>
+              Scan this QR code to open the app, or share the link below with neighbors.
+            </p>
+            <div style={{ display: "inline-block", background: "#fff", padding: 24, borderRadius: 16, boxShadow: "0 4px 20px rgba(0,0,0,0.10)", marginBottom: 24 }}>
+              <QRCodeSVG
+                value="https://the-neighborhood-hangout.vercel.app"
+                size={240}
+                fgColor="#1a365d"
+                bgColor="#ffffff"
+                level="H"
+                includeMargin={true}
+              />
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 13, color: "#718096", marginBottom: 8 }}>Direct link:</p>
+              <a href="https://the-neighborhood-hangout.vercel.app" target="_blank" rel="noreferrer"
+                style={{ color: "#1a365d", fontWeight: 600, fontSize: 15, wordBreak: "break-all" }}>
+                the-neighborhood-hangout.vercel.app
+              </a>
+            </div>
+            <p style={{ fontSize: 13, color: "#a0aec0", marginTop: 16 }}>
+              Remember: only share the invite code (<strong>NEIGHBOR2026</strong>) with residents you know.
+            </p>
           </div>
         )}
       </main>
