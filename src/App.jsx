@@ -28,13 +28,13 @@ import { auth, db } from "./firebase";
 const INVITE_CODE = "NEIGHBOR2026";
 
 const TABS = [
-  { id: "board", label: "ð Board" },
-  { id: "lostfound", label: "ð¾ Lost & Found" },
-  { id: "forsale", label: "ð·ï¸ For Sale / Free" },
-  { id: "events", label: "ð Events" },
-  { id: "directory", label: "ð¥ Directory" },
-  { id: "announcements", label: "ð¢ Announcements" },
-  { id: "qrcode", label: "ð± QR Code" },
+  { id: "board", label: "📋 Board" },
+  { id: "lostfound", label: "🐾 Lost & Found" },
+  { id: "forsale", label: "🏷️ For Sale / Free" },
+  { id: "events", label: "📅 Events" },
+  { id: "directory", label: "👥 Directory" },
+  { id: "announcements", label: "📢 Announcements" },
+  { id: "qrcode", label: "📱 QR Code" },
 ];
 
 export default function App() {
@@ -467,7 +467,7 @@ export default function App() {
     return (
       <div style={styles.authWrap}>
         <div style={styles.authCard}>
-          <h1 style={styles.title}>ð  The Neighborhood Hangout</h1>
+          <h1 style={styles.title}>🏠 The Neighborhood Hangout</h1>
           <p style={styles.subtitle}>Lake Valley RV Community</p>
           <div style={styles.tabs}>
             <button onClick={() => { setMode("signin"); setAuthError(""); }} style={{ ...styles.tab, ...(mode === "signin" ? styles.tabActive : {}) }}>Sign in</button>
@@ -507,7 +507,7 @@ export default function App() {
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerLeft}>
-          <h1 style={styles.headerTitle}>ð  The Neighborhood Hangout</h1>
+          <h1 style={styles.headerTitle}>🏠 The Neighborhood Hangout</h1>
           <div style={styles.headerSub}>Hi, {profile?.displayName || user.email}</div>
         </div>
         {/* Notification Bell */}
@@ -517,7 +517,7 @@ export default function App() {
             style={styles.menuBtn}
             title="Notifications"
           >
-            🔔
+            =
           </button>
           {unreadMessages.length > 0 && (
             <span style={styles.notifBadge}>{unreadMessages.length > 9 ? "9+" : unreadMessages.length}</span>
@@ -544,7 +544,7 @@ export default function App() {
                       <span style={{ ...styles.notifDot, background: isUnread ? "#4a90d9" : "transparent" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: 13, color: "#2d3748" }}>
-                          📝 {msg.displayName || "Neighbor"} posted
+                          =� {msg.displayName || "Neighbor"} posted
                         </div>
                         <div style={styles.notifBody}>{msg.text}</div>
                         <div style={{ fontSize: 11, color: "#a0aec0", marginTop: 3 }}>
@@ -563,10 +563,10 @@ export default function App() {
           )}
         </div>
         <div style={{ position: "relative" }}>
-          <button onClick={() => setMenuOpen((v) => !v)} style={styles.menuBtn}>â¯</button>
+          <button onClick={() => setMenuOpen((v) => !v)} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
             <div style={styles.menu}>
-              <button onClick={() => { setEditingProfile(true); setNewDisplayName(profile?.displayName || ""); setMenuOpen(false); }} style={styles.menuItem}>âï¸ Edit Profile</button>
+              <button onClick={() => { setEditingProfile(true); setNewDisplayName(profile?.displayName || ""); setMenuOpen(false); }} style={styles.menuItem}>✏️ Edit Profile</button>
               <button onClick={handleLogout} style={styles.menuItem}>Sign out</button>
             </div>
           )}
@@ -605,7 +605,7 @@ export default function App() {
           <div>
             {/* Search + Category Filter */}
             <div style={styles.filterRow}>
-              <input type="text" placeholder="ð Search posts..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...styles.input, marginBottom: 0, flex: 1 }} />
+              <input type="text" placeholder="🔍 Search posts..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ ...styles.input, marginBottom: 0, flex: 1 }} />
             </div>
             <div style={styles.categoryRow}>
               {BOARD_CATEGORIES.map((c) => (
@@ -623,7 +623,7 @@ export default function App() {
                       <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
                     ))}
                   </select>
-                  <button type="button" onClick={() => fileInputRef.current?.click()} style={styles.secondaryBtn} disabled={uploadingImage}>ð· {uploadingImage ? "Uploading..." : "Photo"}</button>
+                  <button type="button" onClick={() => fileInputRef.current?.click()} style={styles.secondaryBtn} disabled={uploadingImage}>📷 {uploadingImage ? "Uploading..." : "Photo"}</button>
                   <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
                 </div>
                 <div style={styles.hint}>Be kind. Everyone sees this.</div>
@@ -632,7 +632,7 @@ export default function App() {
             </form>
             {/* Messages Feed */}
             <div style={styles.feed}>
-              {filteredMessages.length === 0 && <div style={styles.empty}>No posts yet. Be the first! ð</div>}
+              {filteredMessages.length === 0 && <div style={styles.empty}>No posts yet. Be the first! 👋</div>}
               {filteredMessages.map((m) => (
                 <div key={m.id} style={styles.msgCard}>
                   <div style={styles.msgHeader}>
@@ -645,9 +645,9 @@ export default function App() {
                   <div style={styles.msgBody}>{m.text}</div>
                   {m.imageUrl && <img src={m.imageUrl} alt="" style={{ maxWidth: "100%", borderRadius: 8, marginTop: 8 }} />}
                   <div style={styles.msgActions}>
-                    <button onClick={() => toggleLike(m.id, m.likes)} style={styles.likeBtn}>{m.likes && m.likes.includes(user.uid) ? "â¤ï¸" : "ð¤"} {(m.likes || []).length}</button>
-                    <button onClick={() => setOpenReplyFor(openReplyFor === m.id ? null : m.id)} style={styles.replyBtn}>ð¬ Reply</button>
-                    {m.authorUid === user.uid && <button onClick={() => deleteMessage(m.id)} style={styles.deleteBtn}>ðï¸</button>}
+                    <button onClick={() => toggleLike(m.id, m.likes)} style={styles.likeBtn}>{m.likes && m.likes.includes(user.uid) ? "❤️" : "🤍"} {(m.likes || []).length}</button>
+                    <button onClick={() => setOpenReplyFor(openReplyFor === m.id ? null : m.id)} style={styles.replyBtn}>💬 Reply</button>
+                    {m.authorUid === user.uid && <button onClick={() => deleteMessage(m.id)} style={styles.deleteBtn}>🗑️</button>}
                   </div>
                   {openReplyFor === m.id && (
                     <div style={styles.replyBox}>
@@ -659,7 +659,7 @@ export default function App() {
                     <div key={r.id} style={styles.replyCard}>
                       <div style={styles.msgHeader}><strong>{r.authorName}</strong><span style={styles.ts}>{fmt(r.createdAt)}</span></div>
                       <div style={styles.msgBody}>{r.text}</div>
-                      {r.authorUid === user.uid && <button onClick={() => deleteReply(m.id, r.id)} style={styles.deleteBtn}>ðï¸</button>}
+                      {r.authorUid === user.uid && <button onClick={() => deleteReply(m.id, r.id)} style={styles.deleteBtn}>🗑️</button>}
                     </div>
                   ))}
                 </div>
@@ -671,7 +671,7 @@ export default function App() {
         {/* ===== LOST & FOUND TAB ===== */}
         {activeTab === "lostfound" && (
           <div>
-            <h2 style={styles.sectionTitle}>ð¾ Lost & Found</h2>
+            <h2 style={styles.sectionTitle}>🐾 Lost & Found</h2>
             <form onSubmit={postLostItem} style={styles.postcard}>
               <div style={styles.formRow}>
                 <input type="text" placeholder="Title (e.g. Lost cat - orange tabby)" value={newLost.title} onChange={(e) => setNewLost((p) => ({ ...p, title: e.target.value }))} style={{ ...styles.input, flex: 2 }} required />
@@ -684,7 +684,7 @@ export default function App() {
               <button type="submit" style={styles.primaryBtn}>Post</button>
             </form>
             <div style={styles.feed}>
-              {lostItems.length === 0 && <div style={styles.empty}>Nothing posted yet ð</div>}
+              {lostItems.length === 0 && <div style={styles.empty}>Nothing posted yet 🙌</div>}
               {lostItems.map((item) => (
                 <div key={item.id} style={styles.msgCard}>
                   <div style={styles.msgHeader}>
@@ -692,8 +692,8 @@ export default function App() {
                     <span style={{ ...styles.catTag, background: item.status === "lost" ? "#fee2e2" : "#dcfce7", color: item.status === "lost" ? "#991b1b" : "#166534" }}>{item.status.toUpperCase()}</span>
                   </div>
                   <div style={styles.msgBody}>{item.description}</div>
-                  <div style={styles.msgHeader}><span style={styles.ts}>Posted by {item.authorName} Â· {fmt(item.createdAt)}</span>
-                    {item.authorUid === user.uid && <button onClick={() => deleteLostItem(item.id)} style={styles.deleteBtn}>ðï¸ Remove</button>}
+                  <div style={styles.msgHeader}><span style={styles.ts}>Posted by {item.authorName} · {fmt(item.createdAt)}</span>
+                    {item.authorUid === user.uid && <button onClick={() => deleteLostItem(item.id)} style={styles.deleteBtn}>🗑️ Remove</button>}
                   </div>
                 </div>
               ))}
@@ -704,7 +704,7 @@ export default function App() {
         {/* ===== FOR SALE / FREE TAB ===== */}
         {activeTab === "forsale" && (
           <div>
-            <h2 style={styles.sectionTitle}>ð·ï¸ For Sale / Free Stuff</h2>
+            <h2 style={styles.sectionTitle}>🏷️ For Sale / Free Stuff</h2>
             <form onSubmit={postSaleItem} style={styles.postcard}>
               <input type="text" placeholder="Item name" value={newSale.title} onChange={(e) => setNewSale((p) => ({ ...p, title: e.target.value }))} style={styles.input} required />
               <textarea value={newSale.description} onChange={(e) => setNewSale((p) => ({ ...p, description: e.target.value }))} placeholder="Description, condition, pickup details..." style={styles.textarea} rows={3} />
@@ -726,8 +726,8 @@ export default function App() {
                     <span style={{ ...styles.catTag, background: item.isFree ? "#d1fae5" : "#fef9c3", color: item.isFree ? "#065f46" : "#713f12" }}>{item.isFree ? "FREE" : item.price}</span>
                   </div>
                   <div style={styles.msgBody}>{item.description}</div>
-                  <div style={styles.msgHeader}><span style={styles.ts}>Posted by {item.authorName} Â· {fmt(item.createdAt)}</span>
-                    {item.authorUid === user.uid && <button onClick={() => deleteSaleItem(item.id)} style={styles.deleteBtn}>ðï¸ Remove</button>}
+                  <div style={styles.msgHeader}><span style={styles.ts}>Posted by {item.authorName} · {fmt(item.createdAt)}</span>
+                    {item.authorUid === user.uid && <button onClick={() => deleteSaleItem(item.id)} style={styles.deleteBtn}>🗑️ Remove</button>}
                   </div>
                 </div>
               ))}
@@ -738,7 +738,7 @@ export default function App() {
         {/* ===== EVENTS TAB ===== */}
         {activeTab === "events" && (
           <div>
-            <h2 style={styles.sectionTitle}>ð Events & Hangouts</h2>
+            <h2 style={styles.sectionTitle}>📅 Events & Hangouts</h2>
             <form onSubmit={postEvent} style={styles.postcard}>
               <input type="text" placeholder="Event title (e.g. BBQ at the pavilion)" value={newEvent.title} onChange={(e) => setNewEvent((p) => ({ ...p, title: e.target.value }))} style={styles.input} required />
               <textarea value={newEvent.description} onChange={(e) => setNewEvent((p) => ({ ...p, description: e.target.value }))} placeholder="Details..." style={styles.textarea} rows={2} />
@@ -749,21 +749,21 @@ export default function App() {
               <button type="submit" style={styles.primaryBtn}>Add Event</button>
             </form>
             <div style={styles.feed}>
-              {events.length === 0 && <div style={styles.empty}>No upcoming events. Plan something! ð</div>}
+              {events.length === 0 && <div style={styles.empty}>No upcoming events. Plan something! 🎉</div>}
               {events.map((ev) => (
                 <div key={ev.id} style={styles.msgCard}>
                   <div style={styles.msgHeader}>
                     <strong>{ev.title}</strong>
                     <span style={styles.ts}>{ev.date ? new Date(ev.date).toLocaleString() : ""}</span>
                   </div>
-                  {ev.location && <div style={{ fontSize: 13, color: "#4a5568", marginBottom: 4 }}>ð {ev.location}</div>}
+                  {ev.location && <div style={{ fontSize: 13, color: "#4a5568", marginBottom: 4 }}>📍 {ev.location}</div>}
                   <div style={styles.msgBody}>{ev.description}</div>
                   <div style={styles.msgActions}>
                     <button onClick={() => toggleRsvp(ev.id, ev.rsvps)} style={{ ...styles.primaryBtn, fontSize: 13, padding: "4px 12px" }}>
-                      {ev.rsvps && ev.rsvps.includes(user.uid) ? "â Going" : "â RSVP"}
+                      {ev.rsvps && ev.rsvps.includes(user.uid) ? "✅ Going" : "➕ RSVP"}
                     </button>
                     <span style={styles.ts}>{(ev.rsvps || []).length} going</span>
-                    {ev.authorUid === user.uid && <button onClick={() => deleteEvent(ev.id)} style={styles.deleteBtn}>ðï¸</button>}
+                    {ev.authorUid === user.uid && <button onClick={() => deleteEvent(ev.id)} style={styles.deleteBtn}>🗑️</button>}
                   </div>
                   <div style={styles.ts}>Posted by {ev.authorName}</div>
                 </div>
@@ -775,12 +775,12 @@ export default function App() {
         {/* ===== DIRECTORY TAB ===== */}
         {activeTab === "directory" && (
           <div>
-            <h2 style={styles.sectionTitle}>ð¥ Neighbor Directory</h2>
+            <h2 style={styles.sectionTitle}>👥 Neighbor Directory</h2>
             <div style={styles.postcard}>
               {!editingDirectory ? (
                 <div>
                   <p style={{ margin: "0 0 8px", fontSize: 14, color: "#4a5568" }}>Add yourself so neighbors can find you! Only shown to logged-in members.</p>
-                  <button onClick={() => setEditingDirectory(true)} style={styles.secondaryBtn}>{myEntry.lot ? "âï¸ Update My Info" : "â Add Myself"}</button>
+                  <button onClick={() => setEditingDirectory(true)} style={styles.secondaryBtn}>{myEntry.lot ? "✏️ Update My Info" : "➕ Add Myself"}</button>
                 </div>
               ) : (
                 <form onSubmit={saveDirectoryEntry}>
@@ -799,7 +799,7 @@ export default function App() {
               )}
             </div>
             <div style={styles.feed}>
-              {neighbors.length === 0 && <div style={styles.empty}>No one in the directory yet. Add yourself! ð</div>}
+              {neighbors.length === 0 && <div style={styles.empty}>No one in the directory yet. Add yourself! 👋</div>}
               {neighbors.map((n) => (
                 <div key={n.id} style={styles.msgCard}>
                   <div style={styles.msgHeader}>
@@ -807,8 +807,8 @@ export default function App() {
                     {n.lot && <span style={styles.catTag}>Lot {n.lot}</span>}
                   </div>
                   {n.bio && <div style={styles.msgBody}>{n.bio}</div>}
-                  {n.pets && <div style={{ fontSize: 13, color: "#4a5568" }}>ð¾ {n.pets}</div>}
-                  {n.showEmail && n.uid !== user.uid && <div style={{ fontSize: 13, color: "#4a5568" }}>âï¸ {profile?.email}</div>}
+                  {n.pets && <div style={{ fontSize: 13, color: "#4a5568" }}>🐾 {n.pets}</div>}
+                  {n.showEmail && n.uid !== user.uid && <div style={{ fontSize: 13, color: "#4a5568" }}>✉️ {profile?.email}</div>}
                 </div>
               ))}
             </div>
@@ -818,7 +818,7 @@ export default function App() {
         {/* ===== ANNOUNCEMENTS TAB ===== */}
         {activeTab === "announcements" && (
           <div>
-            <h2 style={styles.sectionTitle}>ð¢ Announcements</h2>
+            <h2 style={styles.sectionTitle}>📢 Announcements</h2>
             <form onSubmit={postAnnouncement} style={styles.postcard}>
               <input type="text" placeholder="Title (e.g. Water shutoff Thursday 9am)" value={newAnnouncement.title} onChange={(e) => setNewAnnouncement((p) => ({ ...p, title: e.target.value }))} style={styles.input} required />
               <textarea value={newAnnouncement.body} onChange={(e) => setNewAnnouncement((p) => ({ ...p, body: e.target.value }))} placeholder="Details..." style={styles.textarea} rows={3} />
@@ -834,7 +834,7 @@ export default function App() {
                   </div>
                   <div style={styles.msgBody}>{a.body}</div>
                   <div style={styles.msgHeader}><span style={styles.ts}>Posted by {a.authorName}</span>
-                    {a.authorUid === user.uid && <button onClick={() => deleteAnnouncement(a.id)} style={styles.deleteBtn}>ðï¸</button>}
+                    {a.authorUid === user.uid && <button onClick={() => deleteAnnouncement(a.id)} style={styles.deleteBtn}>🗑️</button>}
                   </div>
                 </div>
               ))}
@@ -845,7 +845,7 @@ export default function App() {
         {/* ===== QR CODE TAB ===== */}
         {activeTab === "qrcode" && (
           <div style={{ textAlign: "center", padding: "24px 16px" }}>
-            <h2 style={styles.sectionTitle}>ð± Share The Neighborhood Hangout</h2>
+            <h2 style={styles.sectionTitle}>📱 Share The Neighborhood Hangout</h2>
             <p style={{ color: "#4a5568", fontSize: 14, marginBottom: 24 }}>
               Scan this QR code to open the app, or share the link below with neighbors.
             </p>
