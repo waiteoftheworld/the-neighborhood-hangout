@@ -51,6 +51,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState("board");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [seenMsgIds, setSeenMsgIds] = useState(() => {
     try { return JSON.parse(localStorage.getItem("nh_seen_msgs") || "[]"); }
@@ -562,6 +563,13 @@ export default function App() {
             </div>
           )}
         </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); setHamburgerOpen(v => !v); }}
+          style={{ ...styles.menuBtn, fontSize: 20 }}
+          title="Navigation menu"
+        >
+          ☰
+        </button>
         <div style={{ position: "relative" }}>
           <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
@@ -589,12 +597,27 @@ export default function App() {
         </div>
       )}
 
-      {/* Tab Nav */}
-      <nav style={styles.tabNav}>
-        {TABS.map((t) => (
-          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{ ...styles.navTab, ...(activeTab === t.id ? styles.navTabActive : {}) }}>{t.label}</button>
-        ))}
-      </nav>
+      {/* Hamburger Nav */}
+      {hamburgerOpen && (
+        <div style={styles.hamburgerOverlay} onClick={() => setHamburgerOpen(false)} />
+      )}
+      {hamburgerOpen && (
+        <nav style={styles.hamburgerMenu} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.hamburgerHeader}>
+            <span style={styles.hamburgerTitle}>Menu</span>
+            <button onClick={() => setHamburgerOpen(false)} style={styles.hamburgerClose}>✕</button>
+          </div>
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => { setActiveTab(t.id); setHamburgerOpen(false); }}
+              style={{ ...styles.hamburgerItem, ...(activeTab === t.id ? styles.hamburgerItemActive : {}) }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
+      )}
 
       {toast && <div style={styles.toast}>{toast}</div>}
       {menuOpen && <div onClick={() => setMenuOpen(false)} style={styles.overlay} />}
@@ -906,9 +929,13 @@ const styles = {
   notifCategory: { fontSize: 10, padding: "1px 6px", borderRadius: 10, background: "#e2e8f0", color: "#4a5568", display: "inline-block", marginRight: 4 },
   menu: { position: "absolute", right: 0, top: "110%", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, minWidth: 180, boxShadow: "0 4px 16px rgba(0,0,0,0.12)", zIndex: 100 },
   menuItem: { display: "block", width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 14, color: "#1a365d" },
-  tabNav: { display: "flex", overflowX: "auto", background: "#fff", borderBottom: "1px solid #e2e8f0", padding: "0 12px", gap: 4 },
-  navTab: { padding: "10px 14px", background: "none", border: "none", borderBottom: "3px solid transparent", cursor: "pointer", fontSize: 13, color: "#4a5568", whiteSpace: "nowrap" },
-  navTabActive: { borderBottom: "3px solid #1a365d", color: "#1a365d", fontWeight: 600 },
+  hamburgerOverlay: { position: "fixed", inset: 0, zIndex: 150 },
+  hamburgerMenu: { position: "fixed", top: 0, left: 0, bottom: 0, width: 260, background: "#fff", boxShadow: "4px 0 24px rgba(0,0,0,0.15)", zIndex: 200, display: "flex", flexDirection: "column", overflowY: "auto" },
+  hamburgerHeader: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", background: "#1a365d", color: "#fff" },
+  hamburgerTitle: { fontSize: 16, fontWeight: 700 },
+  hamburgerClose: { background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer", padding: "2px 6px" },
+  hamburgerItem: { display: "block", width: "100%", padding: "14px 20px", background: "none", border: "none", borderBottom: "1px solid #f0f4f8", textAlign: "left", cursor: "pointer", fontSize: 15, color: "#2d3748" },
+  hamburgerItemActive: { background: "#ebf4ff", color: "#1a365d", fontWeight: 700, borderLeft: "4px solid #1a365d" },
   main: { maxWidth: 700, margin: "0 auto", padding: "16px 12px" },
   sectionTitle: { fontSize: 18, fontWeight: 700, color: "#1a365d", marginBottom: 12 },
   postcard: { background: "#fff", borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" },
