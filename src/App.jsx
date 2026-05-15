@@ -503,7 +503,7 @@ export default function App() {
   });
 
   return (
-    <div style={styles.appWrap} onClick={() => { setNotifOpen(false); setMenuOpen(false); }}>
+    <div style={styles.appWrap}>
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerLeft}>
@@ -513,11 +513,11 @@ export default function App() {
         {/* Notification Bell */}
         <div style={{ position: "relative", marginRight: 8 }}>
           <button
-            onClick={() => setNotifOpen(v => !v)}
+            onClick={(e) => { e.stopPropagation(); setNotifOpen(v => !v); }}
             style={styles.menuBtn}
             title="Notifications"
           >
-            =
+            🔔
           </button>
           {unreadMessages.length > 0 && (
             <span style={styles.notifBadge}>{unreadMessages.length > 9 ? "9+" : unreadMessages.length}</span>
@@ -544,7 +544,7 @@ export default function App() {
                       <span style={{ ...styles.notifDot, background: isUnread ? "#4a90d9" : "transparent" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: 13, color: "#2d3748" }}>
-                          =� {msg.displayName || "Neighbor"} posted
+                          📝 {msg.displayName || "Neighbor"} posted
                         </div>
                         <div style={styles.notifBody}>{msg.text}</div>
                         <div style={{ fontSize: 11, color: "#a0aec0", marginTop: 3 }}>
@@ -563,7 +563,7 @@ export default function App() {
           )}
         </div>
         <div style={{ position: "relative" }}>
-          <button onClick={() => setMenuOpen((v) => !v)} style={styles.menuBtn}>⋯</button>
+          <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
             <div style={styles.menu}>
               <button onClick={() => { setEditingProfile(true); setNewDisplayName(profile?.displayName || ""); setMenuOpen(false); }} style={styles.menuItem}>✏️ Edit Profile</button>
