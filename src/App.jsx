@@ -24,6 +24,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
+import { enableNotifications } from "./notifications";
 
 const INVITE_CODE = "NEIGHBOR2026";
 
@@ -570,6 +571,7 @@ export default function App() {
         >
           ☰
         </button>
+        <button onClick={() => enableNotifications()}>Turn on notifications</button>
         <div style={{ position: "relative" }}>
           <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
