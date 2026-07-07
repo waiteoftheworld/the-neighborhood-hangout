@@ -564,13 +564,6 @@ export default function App() {
             </div>
           )}
         </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); setHamburgerOpen(v => !v); }}
-          style={{ ...styles.menuBtn, fontSize: 20 }}
-          title="Navigation menu"
-        >
-          ☰
-        </button>
                 <div style={{ position: "relative" }}>
           <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
@@ -599,26 +592,17 @@ export default function App() {
       )}
 
       {/* Hamburger Nav */}
-      {hamburgerOpen && (
-        <div style={styles.hamburgerOverlay} onClick={() => setHamburgerOpen(false)} />
-      )}
-      {hamburgerOpen && (
         <nav style={styles.hamburgerMenu} onClick={(e) => e.stopPropagation()}>
-          <div style={styles.hamburgerHeader}>
-            <span style={styles.hamburgerTitle}>Menu</span>
-            <button onClick={() => setHamburgerOpen(false)} style={styles.hamburgerClose}>✕</button>
-          </div>
           {TABS.map((t) => (
             <button
               key={t.id}
-              onClick={() => { setActiveTab(t.id); setHamburgerOpen(false); }}
+              onClick={() => { setActiveTab(t.id); }}
               style={{ ...styles.hamburgerItem, ...(activeTab === t.id ? styles.hamburgerItemActive : {}) }}
             >
               {t.label}
             </button>
           ))}
         </nav>
-      )}
 
       {toast && <div style={styles.toast}>{toast}</div>}
       {menuOpen && <div onClick={() => setMenuOpen(false)} style={styles.overlay} />}
@@ -914,7 +898,7 @@ const styles = {
   error: { color: "#e53e3e", fontSize: 13, padding: "6px 10px", background: "#fff5f5", borderRadius: 6 },
   primaryBtn: { padding: "10px 18px", background: "#1a365d", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 600 },
   secondaryBtn: { padding: "10px 18px", background: "#e2e8f0", color: "#1a365d", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 14 },
-  appWrap: { fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7fafc" },
+  appWrap: { fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7fafc", display: "flex" },
   header: { background: "#1a365d", color: "#fff", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
   headerLeft: {},
   headerTitle: { margin: 0, fontSize: 24, fontWeight: 700 },
@@ -931,13 +915,13 @@ const styles = {
   menu: { position: "absolute", right: 0, top: "110%", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 10, minWidth: 180, boxShadow: "0 4px 16px rgba(0,0,0,0.12)", zIndex: 100 },
   menuItem: { display: "block", width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 14, color: "#1a365d" },
   hamburgerOverlay: { position: "fixed", inset: 0, zIndex: 150 },
-  hamburgerMenu: { position: "fixed", top: 0, left: 0, bottom: 0, width: 260, background: "#fff", boxShadow: "4px 0 24px rgba(0,0,0,0.15)", zIndex: 200, display: "flex", flexDirection: "column", overflowY: "auto" },
+  hamburgerMenu: { position: "sticky", top: 0, alignSelf: "flex-start", height: "100vh", width: 260, minWidth: 260, background: "#fff", boxShadow: "4px 0 24px rgba(0,0,0,0.15)", display: "flex", flexDirection: "column", overflowY: "auto" },
   hamburgerHeader: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", background: "#1a365d", color: "#fff" },
   hamburgerTitle: { fontSize: 16, fontWeight: 700 },
   hamburgerClose: { background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer", padding: "2px 6px" },
   hamburgerItem: { display: "block", width: "100%", padding: "14px 20px", background: "none", border: "none", borderBottom: "1px solid #f0f4f8", textAlign: "left", cursor: "pointer", fontSize: 15, color: "#2d3748" },
   hamburgerItemActive: { background: "#ebf4ff", color: "#1a365d", fontWeight: 700, borderLeft: "4px solid #1a365d" },
-  main: { maxWidth: 700, margin: "0 auto", padding: "16px 12px" },
+  main: { flex: 1, minWidth: 0, maxWidth: 700, margin: "0 auto", padding: "16px 12px" },
   sectionTitle: { fontSize: 18, fontWeight: 700, color: "#1a365d", marginBottom: 12 },
   postcard: { background: "#fff", borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" },
   textarea: { width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, resize: "vertical", outline: "none", boxSizing: "border-box", marginBottom: 8 },
