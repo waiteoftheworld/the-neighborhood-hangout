@@ -508,10 +508,6 @@ export default function App() {
     <div style={styles.appWrap}>
       {/* Header */}
       <header style={styles.header}>
-        <div style={styles.headerLeft}>
-          <h1 style={styles.headerTitle}>🏠 The Neighborhood Hangout</h1>
-          <div style={styles.headerSub}>Hi, {profile?.displayName || user.email}</div>
-        </div>
         {/* Sidebar toggle */}
         <button
           onClick={() => setHamburgerOpen((v) => !v)}
@@ -521,6 +517,10 @@ export default function App() {
         >
           ☰
         </button>
+        <div style={styles.headerLeft}>
+          <h1 style={styles.headerTitle}>🏠 The Neighborhood Hangout</h1>
+          <div style={styles.headerSub}>Hi, {profile?.displayName || user.email}</div>
+        </div>
         {/* Notification Bell */}
         <div style={{ position: "relative", marginRight: 8 }}>
           <button
@@ -573,15 +573,6 @@ export default function App() {
             </div>
           )}
         </div>
-                <div style={{ position: "relative" }}>
-          <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
-          {menuOpen && (
-            <div style={styles.menu}>
-              <button onClick={() => { setEditingProfile(true); setNewDisplayName(profile?.displayName || ""); setMenuOpen(false); }} style={styles.menuItem}>✏️ Edit Profile</button>
-              <button onClick={handleLogout} style={styles.menuItem}>Sign out</button>
-            </div>
-          )}
-        </div>
       </header>
 
       {/* Profile Edit Modal */}
@@ -604,6 +595,9 @@ export default function App() {
       {/* Hamburger Nav */}
         {hamburgerOpen && (
         <nav style={styles.hamburgerMenu} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.hamburgerHeader}>
+            <span style={styles.hamburgerTitle}>Menu</span>
+          </div>
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -613,6 +607,15 @@ export default function App() {
               {t.label}
             </button>
           ))}
+          <button
+            onClick={() => { setEditingProfile(true); setNewDisplayName(profile?.displayName || ""); }}
+            style={styles.hamburgerItem}
+          >
+            ✏️ Edit Profile
+          </button>
+          <button onClick={handleLogout} style={styles.hamburgerItem}>
+            🚪 Sign out
+          </button>
         </nav>
         )}
 
