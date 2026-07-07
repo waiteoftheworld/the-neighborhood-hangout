@@ -903,7 +903,7 @@ const styles = {
   appWrap: { fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7fafc" },
   body: { display: "flex", flex: 1, alignItems: "flex-start" },
   header: { background: "#1a365d", color: "#fff", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
-  headerLeft: {},
+  headerLeft: { flex: 1, textAlign: "center" },
   headerTitle: { margin: 0, fontSize: 24, fontWeight: 700 },
   headerSub: { fontSize: 13, opacity: 0.85, marginTop: 2 },
   menuBtn: { background: "none", border: "none", color: "#fff", fontSize: 22, cursor: "pointer", padding: "4px 8px" },
