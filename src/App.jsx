@@ -52,7 +52,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState("board");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [hamburgerOpen, setHamburgerOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [seenMsgIds, setSeenMsgIds] = useState(() => {
     try { return JSON.parse(localStorage.getItem("nh_seen_msgs") || "[]"); }
@@ -512,6 +512,15 @@ export default function App() {
           <h1 style={styles.headerTitle}>🏠 The Neighborhood Hangout</h1>
           <div style={styles.headerSub}>Hi, {profile?.displayName || user.email}</div>
         </div>
+        {/* Sidebar toggle */}
+        <button
+          onClick={() => setHamburgerOpen((v) => !v)}
+          style={{ ...styles.menuBtn, fontSize: 22, marginRight: 8 }}
+          title={hamburgerOpen ? "Hide menu" : "Show menu"}
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
         {/* Notification Bell */}
         <div style={{ position: "relative", marginRight: 8 }}>
           <button
@@ -593,6 +602,7 @@ export default function App() {
 
       <div style={styles.body}>
       {/* Hamburger Nav */}
+        {hamburgerOpen && (
         <nav style={styles.hamburgerMenu} onClick={(e) => e.stopPropagation()}>
           {TABS.map((t) => (
             <button
@@ -604,6 +614,7 @@ export default function App() {
             </button>
           ))}
         </nav>
+        )}
 
       {toast && <div style={styles.toast}>{toast}</div>}
       {menuOpen && <div onClick={() => setMenuOpen(false)} style={styles.overlay} />}
