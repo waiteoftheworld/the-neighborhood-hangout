@@ -571,8 +571,7 @@ export default function App() {
         >
           ☰
         </button>
-        <button onClick={() => enableNotifications()}>Turn on notifications</button>
-        <div style={{ position: "relative" }}>
+                <div style={{ position: "relative" }}>
           <button onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }} style={styles.menuBtn}>⋯</button>
           {menuOpen && (
             <div style={styles.menu}>
