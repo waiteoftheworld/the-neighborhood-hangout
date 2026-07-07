@@ -591,6 +591,7 @@ export default function App() {
         </div>
       )}
 
+      <div style={styles.body}>
       {/* Hamburger Nav */}
         <nav style={styles.hamburgerMenu} onClick={(e) => e.stopPropagation()}>
           {TABS.map((t) => (
@@ -880,6 +881,7 @@ export default function App() {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 }
@@ -898,7 +900,8 @@ const styles = {
   error: { color: "#e53e3e", fontSize: 13, padding: "6px 10px", background: "#fff5f5", borderRadius: 6 },
   primaryBtn: { padding: "10px 18px", background: "#1a365d", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 600 },
   secondaryBtn: { padding: "10px 18px", background: "#e2e8f0", color: "#1a365d", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 14 },
-  appWrap: { fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7fafc", display: "flex" },
+  appWrap: { fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f7fafc" },
+  body: { display: "flex", flex: 1, alignItems: "flex-start" },
   header: { background: "#1a365d", color: "#fff", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
   headerLeft: {},
   headerTitle: { margin: 0, fontSize: 24, fontWeight: 700 },
