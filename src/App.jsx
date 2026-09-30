@@ -52,7 +52,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState("board");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hamburgerOpen, setHamburgerOpen] = useState(true);
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [seenMsgIds, setSeenMsgIds] = useState(() => {
     try { return JSON.parse(localStorage.getItem("nh_seen_msgs") || "[]"); }
