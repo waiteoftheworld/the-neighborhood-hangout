@@ -12,7 +12,7 @@ import {
   addDoc,
   onSnapshot,
   query,
-  orderBy,
+  orderBy, limit,
   serverTimestamp,
   doc,
   setDoc,
@@ -26,7 +26,7 @@ import {
 import { auth, db } from "./firebase";
 import { enableNotifications } from "./notifications";
 
-const INVITE_CODE = "NEIGHBOR2026";
+const INVITE_CODE = "NEIGHBOR2026"; const QUERY_LIMIT = 200;
 
 const TABS = [
   { id: "board", label: "📋 Board" },
@@ -38,7 +38,7 @@ const TABS = [
   { id: "qrcode", label: "📱 QR Code" },
 ];
 
-export default function App() {
+function friendlyAuthError(err) { const code = err && err.code ? err.code : ""; const map = { "auth/invalid-email": "That doesn't look like a valid email address.", "auth/user-not-found": "No account found with that email.", "auth/wrong-password": "Incorrect password. Please try again.", "auth/invalid-credential": "Incorrect email or password.", "auth/email-already-in-use": "An account already exists with that email.", "auth/weak-password": "Password should be at least 6 characters.", "auth/too-many-requests": "Too many attempts. Please wait a bit and try again." }; if (map[code]) return map[code]; return (err && err.message ? err.message : "Something went wrong.").replace("Firebase: ", ""); } export default function App() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authReady, setAuthReady] = useState(false);
@@ -135,7 +135,7 @@ export default function App() {
   // Board messages
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(QUERY_LIMIT));
     const unsub = onSnapshot(q, (snap) => {
       const list = [];
       snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
@@ -161,12 +161,12 @@ export default function App() {
       Object.values(replyUnsubs.current).forEach((u) => u());
       replyUnsubs.current = {};
     };
-  }, [messages, user]);
+  }, [messages.map((m) => m.id).join(","), user]);
 
   // Lost & Found
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "lostfound"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "lostfound"), orderBy("createdAt", "desc"), limit(QUERY_LIMIT));
     return onSnapshot(q, (snap) => {
       setLostItems(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -175,7 +175,7 @@ export default function App() {
   // For Sale
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "forsale"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "forsale"), orderBy("createdAt", "desc"), limit(QUERY_LIMIT));
     return onSnapshot(q, (snap) => {
       setSaleItems(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -184,7 +184,7 @@ export default function App() {
   // Events
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "events"), orderBy("date", "asc"));
+    const q = query(collection(db, "events"), orderBy("date", "asc"), limit(QUERY_LIMIT));
     return onSnapshot(q, (snap) => {
       setEvents(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -193,7 +193,7 @@ export default function App() {
   // Directory
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "directory"), orderBy("lot", "asc"));
+    const q = query(collection(db, "directory"), orderBy("lot", "asc"), limit(QUERY_LIMIT));
     return onSnapshot(q, (snap) => {
       setNeighbors(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -211,7 +211,7 @@ export default function App() {
   // Announcements
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(QUERY_LIMIT));
     return onSnapshot(q, (snap) => {
       setAnnouncements(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -230,7 +230,7 @@ export default function App() {
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
     } catch (err) {
-      setAuthError(err.message.replace("Firebase: ", ""));
+      setAuthError(friendlyAuthError(err));
     }
   }
 
@@ -251,7 +251,7 @@ export default function App() {
       });
       setToast("Welcome to the neighborhood!");
     } catch (err) {
-      setAuthError(err.message.replace("Firebase: ", ""));
+      setAuthError(friendlyAuthError(err));
     }
   }
 
@@ -432,7 +432,7 @@ export default function App() {
     await setDoc(doc(db, "directory", user.uid), {
       ...myEntry,
       uid: user.uid,
-      displayName: profile?.displayName || user.email,
+      displayName: profile?.displayName || user.email, email: user.email,
     });
     setEditingDirectory(false);
     setToast("Directory updated!");
@@ -526,7 +526,7 @@ export default function App() {
           <button
             onClick={(e) => { e.stopPropagation(); setNotifOpen(v => !v); }}
             style={styles.menuBtn}
-            title="Notifications"
+            title="Notifications" aria-label="Notifications"
           >
             🔔
           </button>
@@ -555,7 +555,7 @@ export default function App() {
                       <span style={{ ...styles.notifDot, background: isUnread ? "#4a90d9" : "transparent" }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: 13, color: "#2d3748" }}>
-                          📝 {msg.displayName || "Neighbor"} posted
+                          📝 {msg.authorName || "Neighbor"} posted
                         </div>
                         <div style={styles.notifBody}>{msg.text}</div>
                         <div style={{ fontSize: 11, color: "#a0aec0", marginTop: 3 }}>
@@ -670,7 +670,7 @@ export default function App() {
                   <div style={styles.msgActions}>
                     <button onClick={() => toggleLike(m.id, m.likes)} style={styles.likeBtn}>{m.likes && m.likes.includes(user.uid) ? "❤️" : "🤍"} {(m.likes || []).length}</button>
                     <button onClick={() => setOpenReplyFor(openReplyFor === m.id ? null : m.id)} style={styles.replyBtn}>💬 Reply</button>
-                    {m.authorUid === user.uid && <button onClick={() => deleteMessage(m.id)} style={styles.deleteBtn}>🗑️</button>}
+                    {m.authorUid === user.uid && <button onClick={() => deleteMessage(m.id)} style={styles.deleteBtn} aria-label="Delete post">🗑️</button>}
                   </div>
                   {openReplyFor === m.id && (
                     <div style={styles.replyBox}>
@@ -682,7 +682,7 @@ export default function App() {
                     <div key={r.id} style={styles.replyCard}>
                       <div style={styles.msgHeader}><strong>{r.authorName}</strong><span style={styles.ts}>{fmt(r.createdAt)}</span></div>
                       <div style={styles.msgBody}>{r.text}</div>
-                      {r.authorUid === user.uid && <button onClick={() => deleteReply(m.id, r.id)} style={styles.deleteBtn}>🗑️</button>}
+                      {r.authorUid === user.uid && <button onClick={() => deleteReply(m.id, r.id)} style={styles.deleteBtn} aria-label="Delete reply">🗑️</button>}
                     </div>
                   ))}
                 </div>
@@ -786,7 +786,7 @@ export default function App() {
                       {ev.rsvps && ev.rsvps.includes(user.uid) ? "✅ Going" : "➕ RSVP"}
                     </button>
                     <span style={styles.ts}>{(ev.rsvps || []).length} going</span>
-                    {ev.authorUid === user.uid && <button onClick={() => deleteEvent(ev.id)} style={styles.deleteBtn}>🗑️</button>}
+                    {ev.authorUid === user.uid && <button onClick={() => deleteEvent(ev.id)} style={styles.deleteBtn} aria-label="Delete event">🗑️</button>}
                   </div>
                   <div style={styles.ts}>Posted by {ev.authorName}</div>
                 </div>
@@ -831,7 +831,7 @@ export default function App() {
                   </div>
                   {n.bio && <div style={styles.msgBody}>{n.bio}</div>}
                   {n.pets && <div style={{ fontSize: 13, color: "#4a5568" }}>🐾 {n.pets}</div>}
-                  {n.showEmail && n.uid !== user.uid && <div style={{ fontSize: 13, color: "#4a5568" }}>✉️ {profile?.email}</div>}
+                  {n.showEmail && n.uid !== user.uid && <div style={{ fontSize: 13, color: "#4a5568" }}>✉️ {n.email}</div>}
                 </div>
               ))}
             </div>
@@ -857,7 +857,7 @@ export default function App() {
                   </div>
                   <div style={styles.msgBody}>{a.body}</div>
                   <div style={styles.msgHeader}><span style={styles.ts}>Posted by {a.authorName}</span>
-                    {a.authorUid === user.uid && <button onClick={() => deleteAnnouncement(a.id)} style={styles.deleteBtn}>🗑️</button>}
+                    {a.authorUid === user.uid && <button onClick={() => deleteAnnouncement(a.id)} style={styles.deleteBtn} aria-label="Delete announcement">🗑️</button>}
                   </div>
                 </div>
               ))}
