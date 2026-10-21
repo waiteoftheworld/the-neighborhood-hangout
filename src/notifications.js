@@ -1,7 +1,7 @@
 import { getToken, onMessage, isSupported } from 'firebase/messaging'
 import { messaging } from './firebase'
 
-const VAPID_KEY = 'BPIbCLFyUtAwvmlF0YxnzpUy0aMcaP92xZ0b-6GPwIYTs7lY_qOp4y24v5USMQDFT1vK01_3r7nJ5ujxyZX8qDA'
+const VAPID_KEY = 'BPIbCLFyUtAwvmIF0YxnzpUy0aMcaP92xZ0b-6GPwIYTs7lY_q0p4y24v5USMQDFT1vK01_3r7nJ5ujxyZX8qDA'
 
 export async function pushSupported() {
   try { return (await isSupported()) && 'Notification' in window } catch (e) { return false }
