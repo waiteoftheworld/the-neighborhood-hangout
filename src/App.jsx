@@ -24,7 +24,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
-import { enableNotifications } from "./notifications";
+import { enableNotifications, listenForMessages, pushSupported } from "./notifications";
 
 const INVITE_CODE = "NEIGHBOR2026"; const QUERY_LIMIT = 200;
 
@@ -131,6 +131,52 @@ function friendlyAuthError(err) { const code = err && err.code ? err.code : ""; 
     setSeenMsgIds(newIds);
   };
   const unreadMessages = messages.filter(m => !seenMsgIds.includes(m.id));
+
+  // Push notifications
+  const [pushOn, setPushOn] = useState(
+    typeof Notification !== "undefined" && Notification.permission === "granted"
+    );
+  const [pushPref, setPushPref] = useState("all");
+
+  useEffect(() => {
+    if (!user) return;
+    getDoc(doc(db, "pushTokens", user.uid)).then((s) => {
+      if (s.exists() && s.data().pref) setPushPref(s.data().pref);
+    });
+  }, [user]);
+
+  async function handleEnablePush() {
+    if (!(await pushSupported())) {
+      setToast("Push isn't supported here. On iPhone, add the app to your Home Screen first.");
+      return;
+    }
+    const token = await enableNotifications();
+    if (!token) { setToast("Notifications were blocked."); return; }
+    await setDoc(doc(db, "pushTokens", user.uid), { tokens: arrayUnion(token), pref: pushPref }, { merge: true });
+    setPushOn(true);
+    setToast("Push notifications enabled!");
+  }
+
+  async function changePushPref(pref) {
+    setPushPref(pref);
+    await setDoc(doc(db, "pushTokens", user.uid), { pref }, { merge: true });
+  }
+
+  useEffect(() => {
+    if (!user || !pushOn) return;
+    let unsub = () => {};
+    enableNotifications().then((token) => {
+      if (token) setDoc(doc(db, "pushTokens", user.uid), { tokens: arrayUnion(token) }, { merge: true });
+    });
+    try {
+      unsub = listenForMessages((p) => setToast(((p.data && p.data.title) || "New post") + ": " + ((p.data && p.data.body) || "")));
+    } catch (e) {}
+    return () => unsub();
+  }, [user, pushOn]);
+
+  useEffect(() => {
+    document.title = (unreadMessages.length ? "(" + unreadMessages.length + ") " : "") + "The Neighborhood Hangout";
+  }, [unreadMessages.length]);
 
   // Board messages
   useEffect(() => {
@@ -539,6 +585,7 @@ function friendlyAuthError(err) { const code = err && err.code ? err.code : ""; 
                 <span style={{ fontWeight: 700, fontSize: 15 }}>
                   Notifications{unreadMessages.length > 0 ? ` (${unreadMessages.length} new)` : ""}
                 </span>
+                {!pushOn ? React.createElement("button", { onClick: handleEnablePush, style: styles.markReadBtn }, "Enable push") : React.createElement("select", { value: pushPref, onChange: (e) => changePushPref(e.target.value), style: { fontSize: 12 }, "aria-label": "Push notification settings" }, React.createElement("option", { value: "all" }, "Push: everything"), React.createElement("option", { value: "replies" }, "Push: replies to me"), React.createElement("option", { value: "off" }, "Push: off"))}
                 <button onClick={markAllSeen} style={styles.markReadBtn}>Mark all read</button>
               </div>
               <div style={{ maxHeight: 340, overflowY: "auto" }}>
